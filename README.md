@@ -1,5 +1,15 @@
-# Simplified CRA starter
+# Project Tracker
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a>
+An application to allow team members to manage their projects together.
 
-> This is part of Academy's technical curriculum for **The Mark**. All parts of that curriculum, including this project, are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>
+- <a href="https://github.com/ed-halliwell/project-tracker-fe">Front End Application GitHub Repository</a>
+- <a href="https://github.com/ed-halliwell/project-tracker-be">Back End Application GitHub Repository</a>
+- <a href="https://infallible-perlman-a1e85d.netlify.app/home">Live Site</a>
+
+## Install
+
+`yarn`
+
+## Running locally
+
+`yarn start`
