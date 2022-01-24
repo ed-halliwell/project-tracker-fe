@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import {
@@ -22,6 +23,8 @@ export default function Header(): JSX.Element {
     undefined
   );
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
+
+  const history = useNavigate();
 
   useEffect(() => {
     const userInLocalStorage = localStorage.getItem("loggedInUser");
@@ -54,6 +57,7 @@ export default function Header(): JSX.Element {
     setUserData(userToLogIn);
     localStorage.setItem("loggedInUser", JSON.stringify(userToLogIn));
     setShowLoginForm(false);
+    history("/boards");
   };
 
   const handleLogout = () => {
@@ -61,6 +65,7 @@ export default function Header(): JSX.Element {
     setSelectedUser(undefined);
     setShowLoginForm(false);
     setUserData(undefined);
+    history("/home");
   };
 
   return (

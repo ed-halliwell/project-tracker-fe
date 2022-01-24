@@ -50,7 +50,11 @@ export default function BoardGridPage(): JSX.Element {
               : "Something went wrong")}
         </Heading>
         <Grid mt={5} templateColumns="repeat(5, 1fr)" gap={6}>
-          <BoardGrid boards={boards} />
+          {boards?.length > 0 ? (
+            <BoardGrid boards={boards} />
+          ) : (
+            <h1>No boards for this user</h1>
+          )}
         </Grid>
       </Box>
     </>
