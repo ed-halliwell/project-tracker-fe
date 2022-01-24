@@ -1,12 +1,15 @@
-import { greet } from "./utils/greet";
+import { Outlet } from "react-router-dom";
+import Header from "./components/Header";
 import { Container } from "@chakra-ui/react";
+import UserContextWrapper from "./components/UserContextWrapper";
 
-function App(): JSX.Element {
+export default function App(): JSX.Element {
   return (
     <Container maxW="container.xl">
-      <h1>{greet("World")}</h1>
+      <UserContextWrapper>
+        <Header />
+        <Outlet />
+      </UserContextWrapper>
     </Container>
   );
 }
-
-export default App;
