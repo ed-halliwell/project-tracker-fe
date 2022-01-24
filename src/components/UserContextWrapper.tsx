@@ -11,12 +11,12 @@ export default function UserContextWrapper(
 ): JSX.Element {
   const [userData, setUserData] = useState<IUser | undefined>(undefined);
 
-  const value = useMemo(
+  const user = useMemo(
     () => ({ userData, setUserData }),
     [userData, setUserData]
   );
 
   return (
-    <UserContext.Provider value={value}>{props.children}</UserContext.Provider>
+    <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
   );
 }

@@ -18,12 +18,17 @@ import { IUser } from "../../utils/interfaces";
 export default function Header(): JSX.Element {
   const { userData, setUserData } = useContext(UserContext);
   const [users, setUsers] = useState<IUser[]>([]);
-  const [selectedUser, setselectedUser] = useState<number | undefined>(
+  const [selectedUser, setSelectedUser] = useState<number | undefined>(
     undefined
   );
   const [showLoginForm, setShowLoginForm] = useState<boolean>(false);
 
   useEffect(() => {
+    const userInLocalStorage = localStorage.getItem("loggedInUser");
+    if (userInLocalStorage) {
+      setUserData(JSON.parse(userInLocalStorage));
+    }
+
     const baseUrl = process.env.REACT_APP_API_URL;
     const fetchUsers = async () => {
       try {
@@ -34,25 +39,27 @@ export default function Header(): JSX.Element {
       }
     };
     fetchUsers();
-  }, []);
-
-  const handleLoginClick = () => {
-    setShowLoginForm(true);
-  };
+  }, [setUserData]);
 
   const handleLoginCancel = () => {
+    setSelectedUser(undefined);
     setShowLoginForm(false);
   };
 
   const handleLogin = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    setUserData(
-      users ? users.find((user) => selectedUser === user.id) : undefined
-    );
+    const userToLogIn = users
+      ? users.find((user) => selectedUser === user.id)
+      : undefined;
+    setUserData(userToLogIn);
+    localStorage.setItem("loggedInUser", JSON.stringify(userToLogIn));
     setShowLoginForm(false);
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("loggedInUser");
+    setSelectedUser(undefined);
+    setShowLoginForm(false);
     setUserData(undefined);
   };
 
@@ -86,7 +93,7 @@ export default function Header(): JSX.Element {
             colorScheme="blue"
             variant="outline"
             bg="white"
-            onClick={handleLoginClick}
+            onClick={() => setShowLoginForm(true)}
           >
             Login
           </Button>
@@ -101,7 +108,7 @@ export default function Header(): JSX.Element {
                   <Select
                     placeholder="Select a user"
                     value={selectedUser}
-                    onChange={(e) => setselectedUser(Number(e.target.value))}
+                    onChange={(e) => setSelectedUser(Number(e.target.value))}
                   >
                     {users.map((user) => (
                       <option key={user.id} value={user.id}>
