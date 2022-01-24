@@ -1,10 +1,12 @@
 import { createContext } from "react";
+import { IUser } from "../utils/interfaces";
+
 export const UserContext = createContext<{
-  userId: number | null;
-  setUserId: React.Dispatch<React.SetStateAction<number | null>>;
+  userData: IUser | undefined;
+  setUserData: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 }>({
-  userId: null,
-  setUserId: () => {
+  userData: undefined,
+  setUserData: () => {
     /** */
   },
 });

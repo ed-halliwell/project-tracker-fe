@@ -15,7 +15,6 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route path="*" element={<NotFound />} />
             <Route path="" element={<Navigate replace to="home" />} />
-
             <Route path="home" element={<HomePage />} />
             <Route path="boards" element={<BoardGridPage />} />
           </Route>

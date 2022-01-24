@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { IUser } from "../utils/interfaces";
 
 interface UserContextWrapperProps {
   children: React.ReactNode;
@@ -8,9 +9,12 @@ interface UserContextWrapperProps {
 export default function UserContextWrapper(
   props: UserContextWrapperProps
 ): JSX.Element {
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userData, setUserData] = useState<IUser | undefined>(undefined);
 
-  const value = useMemo(() => ({ userId, setUserId }), [userId, setUserId]);
+  const value = useMemo(
+    () => ({ userData, setUserData }),
+    [userData, setUserData]
+  );
 
   return (
     <UserContext.Provider value={value}>{props.children}</UserContext.Provider>
