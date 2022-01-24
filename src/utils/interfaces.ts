@@ -11,5 +11,6 @@ export interface IBoard {
   id: number;
   board_name: string;
   created_by: number;
+  user_name: string;
   created_at: string;
 }

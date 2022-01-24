@@ -35,7 +35,7 @@ export default function BoardGrid(props: BoardGridProps): JSX.Element {
                   <Box as="span" color="gray.600" fontSize="sm">
                     Created{" "}
                     <strong>{timestampConverter(board.created_at)}</strong> by{" "}
-                    <strong>{board.created_by}</strong>
+                    <strong>{board.user_name}</strong>
                   </Box>
                 </Box>
               </Box>
