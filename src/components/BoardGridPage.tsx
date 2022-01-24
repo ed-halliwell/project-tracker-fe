@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { UserContext } from "../contexts/UserContext";
 import BoardGrid from "./BoardGrid";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Grid, Heading } from "@chakra-ui/react";
 import { IBoard } from "../utils/interfaces";
 
 export default function BoardGridPage(): JSX.Element {
@@ -10,6 +10,7 @@ export default function BoardGridPage(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
 
   useEffect(() => {
+    console.log("useEffect being called in BoardGridPage");
     const fetchBoards = async () => {
       const baseUrl = process.env.REACT_APP_API_URL;
       if (userData?.id) {
@@ -29,19 +30,29 @@ export default function BoardGridPage(): JSX.Element {
     return arr[0];
   };
   return (
-    <Box mx={5} my={5}>
-      <Heading>
-        {userData &&
-          (userData.user_name
-            ? selectFirstName(userData.user_name) + "'s Boards"
-            : "Something went wrong")}
-      </Heading>
-      <Box>
-        {boards.map((board) => (
-          <p key={board.id}>{board.board_name}</p>
-        ))}
+    <>
+      <Box mx={5} my={5}>
+        <Heading>
+          {userData &&
+            (userData.user_name
+              ? selectFirstName(userData.user_name) + "'s Boards"
+              : "Something went wrong")}
+        </Heading>
+        <Grid mt={5} templateColumns="repeat(5, 1fr)" gap={6}>
+          <BoardGrid boards={boards} />
+        </Grid>
       </Box>
-      <BoardGrid />
-    </Box>
+      <Box mx={5} my={5}>
+        <Heading>
+          {userData &&
+            (userData.user_name
+              ? "Boards shared with " + selectFirstName(userData.user_name)
+              : "Something went wrong")}
+        </Heading>
+        <Grid mt={5} templateColumns="repeat(5, 1fr)" gap={6}>
+          <BoardGrid boards={boards} />
+        </Grid>
+      </Box>
+    </>
   );
 }
