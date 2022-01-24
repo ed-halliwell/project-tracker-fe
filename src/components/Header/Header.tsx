@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,6 +8,7 @@ import {
   Heading,
   HStack,
   Select,
+  StackDivider,
   Text,
 } from "@chakra-ui/react";
 
@@ -63,11 +65,20 @@ export default function Header(): JSX.Element {
       sx={{ justifyContent: "space-between" }}
       px={5}
     >
-      <Box>
-        <Heading as="h1" size="xl">
-          Project Tracker
-        </Heading>
-      </Box>
+      <HStack divider={<StackDivider borderColor="gray.200" />}>
+        <Box>
+          <Heading as="h1" size="xl">
+            Project Tracker
+          </Heading>
+        </Box>
+        {userData && (
+          <Link to="boards">
+            <Button variant="solid" bg="blue.800">
+              Boards
+            </Button>
+          </Link>
+        )}
+      </HStack>
 
       {!showLoginForm && !userData && (
         <Box>
