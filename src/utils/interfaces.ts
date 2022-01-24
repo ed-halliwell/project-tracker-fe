@@ -14,3 +14,19 @@ export interface IBoard {
   user_name: string;
   created_at: string;
 }
+
+export interface IBoardTickets {
+  board_id: number;
+  board_name: string;
+  column_id: number;
+  column_name: string;
+  column_order: number;
+  ticket_id: number;
+  ticket_name: string;
+  description: string;
+  assigned_to: number;
+  assigned_to_user_name: string;
+  created_by: number;
+  created_at: string;
+  priority_order: number;
+}

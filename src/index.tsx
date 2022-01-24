@@ -6,6 +6,7 @@ import HomePage from "./components/HomePage";
 import NotFound from "./components/NotFound";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import BoardMainPage from "./components/BoardMainPage";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +17,16 @@ ReactDOM.render(
             <Route path="*" element={<NotFound />} />
             <Route path="" element={<Navigate replace to="home" />} />
             <Route path="home" element={<HomePage />} />
-            <Route path="boards" element={<BoardGridPage />} />
+
+            <Route path="users">
+              <Route index element={<BoardGridPage />} />
+              <Route path=":user_id" element={<Navigate replace to="boards" />}>
+                {/* <Route path="boards">
+                  <Route index element={<BoardGridPage />} />
+                  <Route path=":board_id" element={<BoardMainPage />} />
+                </Route> */}
+              </Route>
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
