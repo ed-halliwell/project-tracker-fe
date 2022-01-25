@@ -18,14 +18,9 @@ ReactDOM.render(
             <Route path="" element={<Navigate replace to="home" />} />
             <Route path="home" element={<HomePage />} />
 
-            <Route path="users">
+            <Route path="boards">
               <Route index element={<BoardGridPage />} />
-              <Route path=":user_id" element={<Navigate replace to="boards" />}>
-                {/* <Route path="boards">
-                  <Route index element={<BoardGridPage />} />
-                  <Route path=":board_id" element={<BoardMainPage />} />
-                </Route> */}
-              </Route>
+              <Route path=":board_id" element={<BoardMainPage />} />
             </Route>
           </Route>
         </Routes>
