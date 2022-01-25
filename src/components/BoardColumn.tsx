@@ -1,5 +1,9 @@
+import axios from "axios";
 import { ITotalColumnData } from "../utils/interfaces";
-import { Avatar, Box, Circle, Heading, HStack, Text } from "@chakra-ui/react";
+import { Box, Circle, Heading, HStack, Text } from "@chakra-ui/react";
+import BoardTicketCard from "./BoardTicketCard";
+import { Container as DragContainer, Draggable } from "react-smooth-dnd";
+import "../styles/BoardMainStyles.css";
 
 interface BoardColumnProps {
   columnData: ITotalColumnData | undefined;
@@ -7,7 +11,28 @@ interface BoardColumnProps {
 
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
   const { columnData } = props;
-  console.log(columnData);
+
+  function onCardDrop(columnId: number | undefined, dropResult: any) {
+    const { removedIndex, addedIndex, payload, element } = dropResult;
+    console.log(columnId, removedIndex, addedIndex, payload, element);
+    // if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+    //   const updateTicketOnDB = async () => {
+    //     try {
+    //       const baseUrl = process.env.REACT_APP_API_URL;
+    //       const res = await axios.get(
+    //         `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${payload.}`
+    //       );
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   }
+    //   updateTicketOnDB
+  }
+
+  function grabCardData(index: number) {
+    return columnData?.ticketData[index];
+  }
+
   return (
     <>
       <Box
@@ -27,46 +52,26 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
             {columnData?.columnData[0].column_name}
           </Heading>
         </HStack>
-        <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
-          {columnData?.ticketData.map((ticket) => (
-            <Box
-              maxW="sm"
-              borderWidth="1px"
-              borderRadius="md"
-              p={2}
-              mb={2}
-              key={ticket.ticket_id}
-            >
-              <HStack justify="space-between">
-                <Box
-                  fontWeight="semibold"
-                  as="h4"
-                  lineHeight="tight"
-                  isTruncated
-                  sx={{
-                    borderBottom: "1px darkgray solid",
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  {ticket.ticket_name}
-                </Box>
-                <Avatar name={ticket.assigned_to_user_name} size="sm" />
-              </HStack>
-              <Box as="h4" fontWeight="light" lineHeight="tight" isTruncated>
-                {ticket.description}
-              </Box>
 
-              <Box
-                color="gray.500"
-                fontWeight="semibold"
-                letterSpacing="wide"
-                fontSize="xs"
-                textTransform="uppercase"
-              >
-                Added by {ticket.user_name}
-              </Box>
-            </Box>
-          ))}
+        <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
+          <DragContainer
+            orientation="vertical"
+            groupName="board"
+            dragClass="being-dragged"
+            dropClass="drop-class"
+            onDrop={(e) => onCardDrop(columnData?.columnData[0].column_id, e)}
+            getChildPayload={(index) => grabCardData(index)}
+          >
+            {columnData?.ticketData
+              .sort((a, b) => {
+                return a.priority_order - b.priority_order;
+              })
+              .map((ticket) => (
+                <Draggable key={ticket.ticket_id}>
+                  <BoardTicketCard ticket={ticket} />
+                </Draggable>
+              ))}
+          </DragContainer>
         </Box>
       </Box>
     </>

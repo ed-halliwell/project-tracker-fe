@@ -10,7 +10,6 @@ export default function BoardGridPage(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
 
   useEffect(() => {
-    console.log("useEffect being called in BoardGridPage");
     const fetchBoards = async () => {
       const baseUrl = process.env.REACT_APP_API_URL;
       if (userData?.id) {

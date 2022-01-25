@@ -1,0 +1,9 @@
+.being-dragged {
+  background-color: rgb(233, 231, 231);
+  border: 2px lightgray solid;
+  opacity: 0.6;
+}
+
+.drop-class {
+  background-color: pink;
+}

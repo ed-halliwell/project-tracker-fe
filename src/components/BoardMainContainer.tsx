@@ -25,7 +25,6 @@ export default function BoardMainContainer(): JSX.Element {
 
   useEffect(() => {
     const baseUrl = process.env.REACT_APP_API_URL;
-    // console.log("UseEffect for board data firing");
     const fetchBoardData = async () => {
       try {
         const res = await axios.get(`${baseUrl}/boards/${board_id}`);
