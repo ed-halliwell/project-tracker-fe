@@ -1,18 +1,26 @@
-import axios from "axios";
+// import axios from "axios";
 import { ITotalColumnData } from "../utils/interfaces";
 import { Box, Circle, Heading, HStack, Text } from "@chakra-ui/react";
 import BoardTicketCard from "./BoardTicketCard";
 import { Container as DragContainer, Draggable } from "react-smooth-dnd";
 import "../styles/BoardMainStyles.css";
+import { TicketData } from "../utils/interfaces";
 
 interface BoardColumnProps {
   columnData: ITotalColumnData | undefined;
 }
 
+interface DropResult {
+  removedIndex: number | null;
+  addedIndex: number | null;
+  payload?: TicketData;
+  element?: unknown;
+}
+
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
   const { columnData } = props;
 
-  function onCardDrop(columnId: number | undefined, dropResult: any) {
+  function onCardDrop(columnId: number, dropResult: DropResult) {
     const { removedIndex, addedIndex, payload, element } = dropResult;
     console.log(columnId, removedIndex, addedIndex, payload, element);
     // if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
@@ -59,7 +67,9 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
             groupName="board"
             dragClass="being-dragged"
             dropClass="drop-class"
-            onDrop={(e) => onCardDrop(columnData?.columnData[0].column_id, e)}
+            onDrop={(e) =>
+              onCardDrop(columnData?.columnData[0].column_id || 0, e)
+            }
             getChildPayload={(index) => grabCardData(index)}
           >
             {columnData?.ticketData
