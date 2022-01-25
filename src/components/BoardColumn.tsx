@@ -1,7 +1,17 @@
+import { useState } from "react";
 // import axios from "axios";
 import { ITotalColumnData } from "../utils/interfaces";
-import { Box, Circle, Heading, HStack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Circle,
+  Heading,
+  HStack,
+  IconButton,
+  Text,
+} from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 import BoardTicketCard from "./BoardTicketCard";
+import CreateTicketForm from "./CreateTicketForm";
 import { Container as DragContainer, Draggable } from "react-smooth-dnd";
 import "../styles/BoardMainStyles.css";
 import { TicketData } from "../utils/interfaces";
@@ -19,6 +29,15 @@ interface DropResult {
 
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
   const { columnData } = props;
+  const [showNewTicketForm, setShowNewTicketForm] = useState<boolean>(false);
+
+  const handlePlusIconClick = () => {
+    setShowNewTicketForm(true);
+  };
+
+  const handleFormCancel = () => {
+    setShowNewTicketForm(false);
+  };
 
   function onCardDrop(columnId: number, dropResult: DropResult) {
     const { removedIndex, addedIndex, payload, element } = dropResult;
@@ -51,17 +70,29 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
         p={3}
         height="80vh"
       >
-        <HStack pb={2}>
-          <Circle size="20px" bg="gray.700" color="white">
-            <Text>{columnData && columnData.ticketData.length}</Text>
-          </Circle>
+        <HStack pb={2} justify="space-between">
+          <Box sx={{ display: "flex" }}>
+            <Circle size="20px" bg="gray.700" color="white">
+              <Text>{columnData && columnData.ticketData.length}</Text>
+            </Circle>
 
-          <Heading as="h3" size="sm" isTruncated>
-            {columnData?.columnData[0].column_name}
-          </Heading>
+            <Heading as="h3" size="sm" isTruncated pl={2}>
+              {columnData?.columnData[0].column_name}
+            </Heading>
+          </Box>
+          <IconButton
+            size="sm"
+            aria-label="Create new ticket"
+            title="Create new ticket"
+            onClick={handlePlusIconClick}
+            icon={<AddIcon />}
+          />
         </HStack>
 
         <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
+          {showNewTicketForm && (
+            <CreateTicketForm handleFormCancel={handleFormCancel} />
+          )}
           <DragContainer
             orientation="vertical"
             groupName="board"
