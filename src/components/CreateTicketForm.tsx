@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 import axios from "axios";
 import {
   Box,
@@ -18,6 +19,7 @@ interface CreateTicketFormProps {
 export default function CreateTicketForm(
   props: CreateTicketFormProps
 ): JSX.Element {
+  const { userData } = useContext(UserContext);
   const { boardId, columnId, handleFormCancel } = props;
   const [inputValue, setInputValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<string>("");
@@ -26,8 +28,18 @@ export default function CreateTicketForm(
     console.log(inputValue, descriptionValue);
     const baseUrl = process.env.REACT_APP_API_URL;
     const res = await axios.post(
-      `${baseUrl}/boards/${boardId}/columns/${columnId}`
+      `${baseUrl}/boards/${boardId}/columns/${columnId}`,
+      {
+        board_id: boardId,
+        column_id: columnId,
+        ticket_name: inputValue,
+        description: descriptionValue,
+        assigned_to: userData?.id,
+        created_by: userData?.id,
+        priority_order: 1,
+      }
     );
+    console.log(res.data.data);
   };
 
   return (
