@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 import {
   Box,
   Button,
@@ -11,16 +11,23 @@ import {
 
 interface CreateTicketFormProps {
   handleFormCancel: () => void;
+  boardId: number | undefined;
+  columnId: number | undefined;
 }
 
 export default function CreateTicketForm(
   props: CreateTicketFormProps
 ): JSX.Element {
+  const { boardId, columnId, handleFormCancel } = props;
   const [inputValue, setInputValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<string>("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(inputValue, descriptionValue);
+    const baseUrl = process.env.REACT_APP_API_URL;
+    const res = await axios.post(
+      `${baseUrl}/boards/${boardId}/columns/${columnId}`
+    );
   };
 
   return (
@@ -57,7 +64,7 @@ export default function CreateTicketForm(
             size="xs"
             variant="outline"
             colorScheme="blue"
-            onClick={props.handleFormCancel}
+            onClick={handleFormCancel}
           >
             Cancel
           </Button>

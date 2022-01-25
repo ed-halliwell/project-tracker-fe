@@ -91,7 +91,11 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
 
         <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
           {showNewTicketForm && (
-            <CreateTicketForm handleFormCancel={handleFormCancel} />
+            <CreateTicketForm
+              handleFormCancel={handleFormCancel}
+              boardId={columnData?.columnData[0].board_id}
+              columnId={columnData?.columnData[0].column_id}
+            />
           )}
           <DragContainer
             orientation="vertical"
