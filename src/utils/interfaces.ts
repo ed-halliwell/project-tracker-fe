@@ -30,3 +30,28 @@ export interface IBoardTickets {
   created_at: string;
   priority_order: number;
 }
+
+export interface ITotalColumnData {
+  message: string;
+  columnData: IColumnMetaData[];
+  ticketData: TicketData[];
+}
+
+export interface IColumnMetaData {
+  board_id: number;
+  board_name: string;
+  column_id: number;
+  column_name: string;
+  column_order: number;
+}
+export interface TicketData {
+  ticket_id: number;
+  ticket_name: string;
+  description: string;
+  assigned_to: number;
+  assigned_to_user_name: string;
+  created_by: number;
+  user_name: string;
+  created_at: string;
+  priority_order: number;
+}

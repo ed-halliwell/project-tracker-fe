@@ -1,36 +1,46 @@
 import { createContext } from "react";
-import { IBoardTickets } from "../utils/interfaces";
+import { ITotalColumnData } from "../utils/interfaces";
 
 export const BoardContext = createContext<{
-  column1Tickets: IBoardTickets[];
-  setColumn1Tickets: React.Dispatch<React.SetStateAction<IBoardTickets[]>>;
-  column2Tickets: IBoardTickets[];
-  setColumn2Tickets: React.Dispatch<React.SetStateAction<IBoardTickets[]>>;
-  column3Tickets: IBoardTickets[];
-  setColumn3Tickets: React.Dispatch<React.SetStateAction<IBoardTickets[]>>;
-  column4Tickets: IBoardTickets[];
-  setColumn4Tickets: React.Dispatch<React.SetStateAction<IBoardTickets[]>>;
-  column5Tickets: IBoardTickets[];
-  setColumn5Tickets: React.Dispatch<React.SetStateAction<IBoardTickets[]>>;
+  column1Data: ITotalColumnData | undefined;
+  setColumn1Data: React.Dispatch<
+    React.SetStateAction<ITotalColumnData | undefined>
+  >;
+  column2Data: ITotalColumnData | undefined;
+  setColumn2Data: React.Dispatch<
+    React.SetStateAction<ITotalColumnData | undefined>
+  >;
+  column3Data: ITotalColumnData | undefined;
+  setColumn3Data: React.Dispatch<
+    React.SetStateAction<ITotalColumnData | undefined>
+  >;
+  column4Data: ITotalColumnData | undefined;
+  setColumn4Data: React.Dispatch<
+    React.SetStateAction<ITotalColumnData | undefined>
+  >;
+  column5Data: ITotalColumnData | undefined;
+  setColumn5Data: React.Dispatch<
+    React.SetStateAction<ITotalColumnData | undefined>
+  >;
 }>({
-  column1Tickets: [],
-  setColumn1Tickets: () => {
+  column1Data: undefined,
+  setColumn1Data: () => {
     /** */
   },
-  column2Tickets: [],
-  setColumn2Tickets: () => {
+  column2Data: undefined,
+  setColumn2Data: () => {
     /** */
   },
-  column3Tickets: [],
-  setColumn3Tickets: () => {
+  column3Data: undefined,
+  setColumn3Data: () => {
     /** */
   },
-  column4Tickets: [],
-  setColumn4Tickets: () => {
+  column4Data: undefined,
+  setColumn4Data: () => {
     /** */
   },
-  column5Tickets: [],
-  setColumn5Tickets: () => {
+  column5Data: undefined,
+  setColumn5Data: () => {
     /** */
   },
 });

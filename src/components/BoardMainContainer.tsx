@@ -2,33 +2,46 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BoardContext } from "../contexts/BoardContext";
-import { IBoardTickets } from "../utils/interfaces";
+import BoardColumn from "./BoardColumn";
+import { IBoard } from "../utils/interfaces";
+import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
 
 export default function BoardMainContainer(): JSX.Element {
   const params = useParams();
   const board_id = params.board_id ? parseInt(params.board_id, 10) : 0;
+  const [boardData, setBoardData] = useState<IBoard | undefined>();
   const {
-    column1Tickets,
-    setColumn1Tickets,
-    column2Tickets,
-    setColumn2Tickets,
-    column3Tickets,
-    setColumn3Tickets,
-    column4Tickets,
-    setColumn4Tickets,
-    column5Tickets,
-    setColumn5Tickets,
+    column1Data,
+    setColumn1Data,
+    column2Data,
+    setColumn2Data,
+    column3Data,
+    setColumn3Data,
+    column4Data,
+    setColumn4Data,
+    column5Data,
+    setColumn5Data,
   } = useContext(BoardContext);
 
   useEffect(() => {
     const baseUrl = process.env.REACT_APP_API_URL;
-    console.log("UseEffect for board data firing");
+    // console.log("UseEffect for board data firing");
     const fetchBoardData = async () => {
+      try {
+        const res = await axios.get(`${baseUrl}/boards/${board_id}`);
+        setBoardData(res.data.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+
       try {
         const res = await axios.get(
           `${baseUrl}/boards/${board_id}/column_data`
         );
-        const columnArray = res.data.data.map((a: any) => a.column_ids);
+
+        const columnArray = res.data.data.map(
+          (a: { column_ids: number }) => a.column_ids
+        );
 
         const fetchAndSetColumnData = async (column_id: number) => {
           const res = await axios.get(
@@ -37,19 +50,19 @@ export default function BoardMainContainer(): JSX.Element {
 
           switch (column_id) {
             case 1:
-              setColumn1Tickets(res.data.data);
+              setColumn1Data(res.data);
               break;
             case 2:
-              setColumn2Tickets(res.data.data);
+              setColumn2Data(res.data);
               break;
             case 3:
-              setColumn3Tickets(res.data.data);
+              setColumn3Data(res.data);
               break;
             case 4:
-              setColumn4Tickets(res.data.data);
+              setColumn4Data(res.data);
               break;
             case 5:
-              setColumn5Tickets(res.data.data);
+              setColumn5Data(res.data);
               break;
           }
         };
@@ -61,22 +74,35 @@ export default function BoardMainContainer(): JSX.Element {
       }
     };
     fetchBoardData();
-  }, []);
+  }, [
+    board_id,
+    setColumn1Data,
+    setColumn2Data,
+    setColumn3Data,
+    setColumn4Data,
+    setColumn5Data,
+  ]);
 
   return (
-    <div>
-      Column 1
-      <ul>
-        {column1Tickets.map((ticket) => (
-          <li key={ticket.ticket_id}>
-            <p>{ticket.ticket_id}</p>
-            <p>{ticket.column_id}</p>
-            <p>{ticket.ticket_name}</p>
-            <p>{ticket.description}</p>
-            <p>{ticket.assigned_to_user_name}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Box m={5}>
+      {boardData && <Heading mb={3}>{boardData.board_name}</Heading>}
+      <Grid templateColumns="repeat(5, 1fr)" gap={6}>
+        <GridItem w="100%" h="94vh">
+          <BoardColumn columnData={column1Data} />
+        </GridItem>
+        <GridItem w="100%" h="94vh">
+          <BoardColumn columnData={column2Data} />
+        </GridItem>
+        <GridItem w="100%" h="94vh">
+          <BoardColumn columnData={column3Data} />
+        </GridItem>
+        <GridItem w="100%" h="94vh">
+          <BoardColumn columnData={column4Data} />
+        </GridItem>
+        <GridItem w="100%" h="94vh">
+          <BoardColumn columnData={column5Data} />
+        </GridItem>
+      </Grid>
+    </Box>
   );
 }
