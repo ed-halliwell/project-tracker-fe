@@ -17,6 +17,7 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Text,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -27,23 +28,40 @@ interface BoardTicketCardProps {
   ticket: TicketData;
   key: number;
   boardId: number;
+  columnId: number;
   handleRefetch: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function BoardTicketCard(
   props: BoardTicketCardProps
 ): JSX.Element {
-  const { ticket, boardId, handleRefetch } = props;
+  const { ticket, boardId, handleRefetch, columnId } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   const ticketDelete = async () => {
-    const baseUrl = process.env.REACT_APP_API_URL;
     await axios.delete(
       `${baseUrl}/boards/${boardId}/tickets/${ticket.ticket_id}`
     );
     handleRefetch((prev) => -prev);
     onClose();
   };
+
+  const increasePriority = (currentPriority: number) => {
+    const updateDatabase = async () => {
+      await axios.patch(
+        `${baseUrl}/boards/${boardId}/tickets/${ticket.ticket_id}`,
+        {
+          priority_order: currentPriority + 1,
+          column_id: columnId,
+        }
+      );
+    };
+    updateDatabase();
+    handleRefetch((prev) => -prev);
+  };
+
+  //   const decreasePriority = (): void => {};
 
   return (
     <Box maxW="sm" borderWidth="1px" borderRadius="md" p={2} mb={2} bg="white">
@@ -54,11 +72,12 @@ export default function BoardTicketCard(
             <Box
               fontWeight="semibold"
               as="h4"
+              fontSize="sm"
               lineHeight="tight"
               isTruncated
               sx={{
                 marginLeft: "6px",
-                borderBottom: "1px darkgray solid",
+                borderBottom: "1px #CBD5E0 solid",
                 alignSelf: "center",
               }}
             >
@@ -66,8 +85,15 @@ export default function BoardTicketCard(
             </Box>
           </Box>
         </GridItem>
-        <GridItem rowSpan={2} colSpan={1}>
-          <VStack alignItems="flex-end">
+        <GridItem
+          rowSpan={2}
+          colSpan={1}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <VStack justifyContent="space-between">
             <Box>
               <Menu size="xs">
                 <MenuButton
@@ -110,6 +136,7 @@ export default function BoardTicketCard(
                 title="Move up"
                 variant="outline"
                 icon={<ArrowUpIcon />}
+                onClick={() => increasePriority(ticket.priority_order)}
               />
               <IconButton
                 size="xs"
@@ -117,15 +144,24 @@ export default function BoardTicketCard(
                 title="Move down"
                 variant="outline"
                 icon={<ArrowDownIcon />}
+                // onClick={decreasePriority}
               />
             </VStack>
           </VStack>
         </GridItem>
         <GridItem colSpan={5}>
           <VStack alignItems="flex-start">
-            <Box as="h4" fontWeight="light" lineHeight="tight" isTruncated>
+            <Text
+              fontSize="sm"
+              noOfLines={5}
+              isTruncated
+              maxWidth="100%"
+              lineHeight="tight"
+              sx={{ whiteSpace: "normal" }}
+            >
               {ticket.description}
-            </Box>
+            </Text>
+
             <Box
               color="gray.500"
               fontWeight="semibold"

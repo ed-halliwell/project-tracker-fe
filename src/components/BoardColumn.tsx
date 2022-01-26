@@ -48,11 +48,12 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
     <>
       <Box
         maxW="sm"
+        bgColor="#F7FAFC"
         borderWidth="1px"
         borderRadius="lg"
         overflow="hidden"
         p={3}
-        height="80vh"
+        height="100%"
       >
         <HStack pb={2} justify="space-between">
           <Box sx={{ display: "flex" }}>
@@ -66,6 +67,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
           </Box>
           <IconButton
             size="sm"
+            variant="ghost"
             aria-label="Create new ticket"
             title="Create new ticket"
             onClick={handlePlusIconClick}
@@ -73,7 +75,14 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
           />
         </HStack>
 
-        <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
+        <Box
+          maxW="sm"
+          bgColor="white"
+          borderWidth="1px"
+          borderRadius="md"
+          p={1}
+          sx={{ height: "100%", overflowY: "scroll" }}
+        >
           {showNewTicketForm && (
             <CreateTicketForm
               handleFormClose={handleFormClose}
@@ -91,6 +100,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
               key={ticket.ticket_id}
               ticket={ticket}
               boardId={columnData.columnData[0].board_id}
+              columnId={columnData.columnData[0].column_id}
               handleRefetch={handleRefetch}
             />
           ))}

@@ -7,6 +7,7 @@ import {
   FormControl,
   HStack,
   Input,
+  Select,
   Textarea,
 } from "@chakra-ui/react";
 
@@ -78,6 +79,14 @@ export default function CreateTicketForm(
             value={descriptionValue}
             onChange={(e) => setDescriptionValue(e.target.value)}
           />
+        </FormControl>
+        <FormControl>
+          {/* Come back to this and add in board members data */}
+          <Select mb={1} size="sm" placeholder="Choose assignee">
+            <option value="option1">User 1</option>
+            <option value="option2">User 2</option>
+            <option value="option3">User 3</option>
+          </Select>
         </FormControl>
         <HStack justify="right">
           <Button
