@@ -30,38 +30,27 @@ interface BoardTicketCardProps {
   boardId: number;
   columnId: number;
   handleRefetch: React.Dispatch<React.SetStateAction<number>>;
+  handlePriorityChange: (
+    ticketId: number,
+    currentPriority: number,
+    type: string
+  ) => void;
 }
 
 export default function BoardTicketCard(
   props: BoardTicketCardProps
 ): JSX.Element {
-  const { ticket, boardId, handleRefetch, columnId } = props;
+  const { ticket, boardId, handleRefetch, handlePriorityChange } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const baseUrl = process.env.REACT_APP_API_URL;
 
   const ticketDelete = async () => {
+    const baseUrl = process.env.REACT_APP_API_URL;
     await axios.delete(
       `${baseUrl}/boards/${boardId}/tickets/${ticket.ticket_id}`
     );
     handleRefetch((prev) => -prev);
     onClose();
   };
-
-  const increasePriority = (currentPriority: number) => {
-    const updateDatabase = async () => {
-      await axios.patch(
-        `${baseUrl}/boards/${boardId}/tickets/${ticket.ticket_id}`,
-        {
-          priority_order: currentPriority + 1,
-          column_id: columnId,
-        }
-      );
-    };
-    updateDatabase();
-    handleRefetch((prev) => -prev);
-  };
-
-  //   const decreasePriority = (): void => {};
 
   return (
     <Box maxW="sm" borderWidth="1px" borderRadius="md" p={2} mb={2} bg="white">
@@ -136,7 +125,13 @@ export default function BoardTicketCard(
                 title="Move up"
                 variant="outline"
                 icon={<ArrowUpIcon />}
-                onClick={() => increasePriority(ticket.priority_order)}
+                onClick={() =>
+                  handlePriorityChange(
+                    ticket.ticket_id,
+                    ticket.priority_order,
+                    "increase"
+                  )
+                }
               />
               <IconButton
                 size="xs"
@@ -144,7 +139,13 @@ export default function BoardTicketCard(
                 title="Move down"
                 variant="outline"
                 icon={<ArrowDownIcon />}
-                // onClick={decreasePriority}
+                onClick={() =>
+                  handlePriorityChange(
+                    ticket.ticket_id,
+                    ticket.priority_order,
+                    "decrease"
+                  )
+                }
               />
             </VStack>
           </VStack>

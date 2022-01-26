@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { ITotalColumnData, TicketData } from "../utils/interfaces";
 import {
   Box,
@@ -42,6 +43,77 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
       });
     }
     return highestPriorityValue;
+  };
+
+  const handlePriorityChange = (
+    ticketId: number,
+    currentPriority: number,
+    type: string
+  ) => {
+    const baseUrl = process.env.REACT_APP_API_URL;
+
+    let nextHighestPriority: number | undefined;
+    let nextLowerPriority: number | undefined;
+    let swapTicket: TicketData | undefined;
+
+    if (type === "increase") {
+      if (columnData) {
+        for (const ticket of columnData?.ticketData) {
+          if (ticket.priority_order > currentPriority) {
+            if (nextHighestPriority === undefined) {
+              nextHighestPriority = ticket.priority_order;
+            } else if (ticket.priority_order < nextHighestPriority) {
+              nextHighestPriority = ticket.priority_order;
+            }
+          }
+        }
+      }
+
+      swapTicket = columnData?.ticketData.find(
+        (t) => t.priority_order === nextHighestPriority
+      );
+    } else if (type === "decrease") {
+      if (columnData) {
+        for (const ticket of columnData?.ticketData) {
+          if (ticket.priority_order < currentPriority) {
+            if (nextLowerPriority === undefined) {
+              nextLowerPriority = ticket.priority_order;
+            } else if (ticket.priority_order > nextLowerPriority) {
+              nextLowerPriority = ticket.priority_order;
+            }
+          }
+        }
+      }
+
+      swapTicket = columnData?.ticketData.find(
+        (t) => t.priority_order === nextLowerPriority
+      );
+    }
+
+    const swapPriorityValues = async () => {
+      if (swapTicket) {
+        await axios.patch(
+          `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${ticketId}`,
+          {
+            priority_order: swapTicket.priority_order,
+          }
+        );
+        await axios.patch(
+          `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${swapTicket.ticket_id}`,
+          {
+            priority_order: currentPriority,
+          }
+        );
+      }
+    };
+    if (
+      (type === "increase" && nextHighestPriority !== undefined) ||
+      (type === "decrease" && nextLowerPriority !== undefined)
+    ) {
+      console.log("firing inside the if");
+      swapPriorityValues();
+      handleRefetch((prev) => -prev);
+    }
   };
 
   return (
@@ -101,6 +173,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
               ticket={ticket}
               boardId={columnData.columnData[0].board_id}
               columnId={columnData.columnData[0].column_id}
+              handlePriorityChange={handlePriorityChange}
               handleRefetch={handleRefetch}
             />
           ))}
