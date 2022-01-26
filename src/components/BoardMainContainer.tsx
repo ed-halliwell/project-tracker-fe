@@ -9,9 +9,12 @@ import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
 export default function BoardMainContainer(): JSX.Element {
   const params = useParams();
   const board_id = params.board_id ? parseInt(params.board_id, 10) : 0;
-  const [boardData, setBoardData] = useState<IBoard | undefined>();
   const [refetch, setRefetch] = useState<number>(1);
   const {
+    boardData,
+    setBoardData,
+    boardMembers,
+    setBoardMembers,
     column1Data,
     setColumn1Data,
     column2Data,
@@ -30,6 +33,15 @@ export default function BoardMainContainer(): JSX.Element {
       try {
         const res = await axios.get(`${baseUrl}/boards/${board_id}`);
         setBoardData(res.data.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+
+      try {
+        const res = await axios.get(
+          `${baseUrl}/boards/${board_id}/board_members`
+        );
+        setBoardMembers(res.data.data);
       } catch (error) {
         console.error(error);
       }

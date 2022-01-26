@@ -56,3 +56,10 @@ export interface TicketData {
   created_at: string;
   priority_order: number;
 }
+
+export interface IBoardMember {
+  user_id: number;
+  user_name: string;
+  member_role: string;
+  date_added: string;
+}

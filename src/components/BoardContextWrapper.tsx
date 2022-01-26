@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { BoardContext } from "../contexts/BoardContext";
-import { ITotalColumnData } from "../utils/interfaces";
+import { ITotalColumnData, IBoard, IBoardMember } from "../utils/interfaces";
 
 interface BoardContextWrapperProps {
   children: React.ReactNode;
@@ -9,6 +9,10 @@ interface BoardContextWrapperProps {
 export default function BoardContextWrapper(
   props: BoardContextWrapperProps
 ): JSX.Element {
+  const [boardData, setBoardData] = useState<IBoard | undefined>(undefined);
+  const [boardMembers, setBoardMembers] = useState<IBoardMember[] | undefined>(
+    undefined
+  );
   const [column1Data, setColumn1Data] = useState<ITotalColumnData | undefined>(
     undefined
   );
@@ -27,6 +31,10 @@ export default function BoardContextWrapper(
 
   const board = useMemo(
     () => ({
+      boardData,
+      setBoardData,
+      boardMembers,
+      setBoardMembers,
       column1Data,
       setColumn1Data,
       column2Data,
@@ -39,6 +47,10 @@ export default function BoardContextWrapper(
       setColumn5Data,
     }),
     [
+      boardData,
+      setBoardData,
+      boardMembers,
+      setBoardMembers,
       column1Data,
       setColumn1Data,
       column2Data,

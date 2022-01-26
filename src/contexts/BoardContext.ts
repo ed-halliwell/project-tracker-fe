@@ -1,7 +1,13 @@
 import { createContext } from "react";
-import { ITotalColumnData } from "../utils/interfaces";
+import { ITotalColumnData, IBoard, IBoardMember } from "../utils/interfaces";
 
 export const BoardContext = createContext<{
+  boardData: IBoard | undefined;
+  setBoardData: React.Dispatch<React.SetStateAction<IBoard | undefined>>;
+  boardMembers: IBoardMember[] | undefined;
+  setBoardMembers: React.Dispatch<
+    React.SetStateAction<IBoardMember[] | undefined>
+  >;
   column1Data: ITotalColumnData | undefined;
   setColumn1Data: React.Dispatch<
     React.SetStateAction<ITotalColumnData | undefined>
@@ -23,6 +29,14 @@ export const BoardContext = createContext<{
     React.SetStateAction<ITotalColumnData | undefined>
   >;
 }>({
+  boardData: undefined,
+  setBoardData: () => {
+    /** */
+  },
+  boardMembers: undefined,
+  setBoardMembers: () => {
+    /** */
+  },
   column1Data: undefined,
   setColumn1Data: () => {
     /** */
