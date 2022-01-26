@@ -14,21 +14,22 @@ interface CreateTicketFormProps {
   handleFormCancel: () => void;
   boardId: number | undefined;
   columnId: number | undefined;
+  currentHighestPriority: number;
 }
 
 export default function CreateTicketForm(
   props: CreateTicketFormProps
 ): JSX.Element {
   const { userData } = useContext(UserContext);
-  const { boardId, columnId, handleFormCancel } = props;
+  const { boardId, columnId, handleFormCancel, currentHighestPriority } = props;
   const [inputValue, setInputValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<string>("");
 
   const handleSubmit = async () => {
-    console.log(inputValue, descriptionValue);
+    console.log("handleSubmit is firing", inputValue, descriptionValue);
     const baseUrl = process.env.REACT_APP_API_URL;
     const res = await axios.post(
-      `${baseUrl}/boards/${boardId}/columns/${columnId}`,
+      `${baseUrl}/boards/${boardId}/columns/${columnId}/tickets`,
       {
         board_id: boardId,
         column_id: columnId,
@@ -36,7 +37,7 @@ export default function CreateTicketForm(
         description: descriptionValue,
         assigned_to: userData?.id,
         created_by: userData?.id,
-        priority_order: 1,
+        priority_order: currentHighestPriority + 1,
       }
     );
     console.log(res.data.data);

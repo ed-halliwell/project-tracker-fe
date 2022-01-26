@@ -1,6 +1,5 @@
 import { useState } from "react";
-// import axios from "axios";
-import { ITotalColumnData } from "../utils/interfaces";
+import { ITotalColumnData, TicketData } from "../utils/interfaces";
 import {
   Box,
   Circle,
@@ -12,19 +11,10 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import BoardTicketCard from "./BoardTicketCard";
 import CreateTicketForm from "./CreateTicketForm";
-import { Container as DragContainer, Draggable } from "react-smooth-dnd";
 import "../styles/BoardMainStyles.css";
-import { TicketData } from "../utils/interfaces";
 
 interface BoardColumnProps {
   columnData: ITotalColumnData | undefined;
-}
-
-interface DropResult {
-  removedIndex: number | null;
-  addedIndex: number | null;
-  payload?: TicketData;
-  element?: unknown;
 }
 
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
@@ -39,26 +29,19 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
     setShowNewTicketForm(false);
   };
 
-  function onCardDrop(columnId: number, dropResult: DropResult) {
-    const { removedIndex, addedIndex, payload, element } = dropResult;
-    console.log(columnId, removedIndex, addedIndex, payload, element);
-    // if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-    //   const updateTicketOnDB = async () => {
-    //     try {
-    //       const baseUrl = process.env.REACT_APP_API_URL;
-    //       const res = await axios.get(
-    //         `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${payload.}`
-    //       );
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   }
-    //   updateTicketOnDB
-  }
-
-  function grabCardData(index: number) {
-    return columnData?.ticketData[index];
-  }
+  const findHighestPriority = (
+    ticketData: TicketData[] | undefined
+  ): number => {
+    let highestPriorityValue = 0;
+    if (ticketData) {
+      ticketData.forEach((t) => {
+        if (t.priority_order > highestPriorityValue) {
+          highestPriorityValue = t.priority_order;
+        }
+      });
+    }
+    return highestPriorityValue;
+  };
 
   return (
     <>
@@ -95,28 +78,15 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
               handleFormCancel={handleFormCancel}
               boardId={columnData?.columnData[0].board_id}
               columnId={columnData?.columnData[0].column_id}
+              currentHighestPriority={findHighestPriority(
+                columnData?.ticketData
+              )}
             />
           )}
-          <DragContainer
-            orientation="vertical"
-            groupName="board"
-            dragClass="being-dragged"
-            dropClass="drop-class"
-            onDrop={(e) =>
-              onCardDrop(columnData?.columnData[0].column_id || 0, e)
-            }
-            getChildPayload={(index) => grabCardData(index)}
-          >
-            {columnData?.ticketData
-              .sort((a, b) => {
-                return a.priority_order - b.priority_order;
-              })
-              .map((ticket) => (
-                <Draggable key={ticket.ticket_id}>
-                  <BoardTicketCard ticket={ticket} />
-                </Draggable>
-              ))}
-          </DragContainer>
+
+          {columnData?.ticketData.map((ticket) => (
+            <BoardTicketCard key={ticket.ticket_id} ticket={ticket} />
+          ))}
         </Box>
       </Box>
     </>
