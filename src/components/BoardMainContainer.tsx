@@ -3,7 +3,6 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BoardContext } from "../contexts/BoardContext";
 import BoardColumn from "./BoardColumn";
-import { IBoard } from "../utils/interfaces";
 import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
 
 export default function BoardMainContainer(): JSX.Element {
@@ -13,7 +12,6 @@ export default function BoardMainContainer(): JSX.Element {
   const {
     boardData,
     setBoardData,
-    boardMembers,
     setBoardMembers,
     column1Data,
     setColumn1Data,
@@ -94,25 +92,27 @@ export default function BoardMainContainer(): JSX.Element {
     setColumn4Data,
     setColumn5Data,
     refetch,
+    setBoardData,
+    setBoardMembers,
   ]);
 
   return (
     <Box m={5}>
       {boardData && <Heading mb={3}>{boardData.board_name}</Heading>}
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
-        <GridItem w="100%" h="94vh">
+        <GridItem w="100%">
           <BoardColumn columnData={column1Data} handleRefetch={setRefetch} />
         </GridItem>
-        <GridItem w="100%" h="94vh">
+        <GridItem w="100%">
           <BoardColumn columnData={column2Data} handleRefetch={setRefetch} />
         </GridItem>
-        <GridItem w="100%" h="94vh">
+        <GridItem w="100%">
           <BoardColumn columnData={column3Data} handleRefetch={setRefetch} />
         </GridItem>
-        <GridItem w="100%" h="94vh">
+        <GridItem w="100%">
           <BoardColumn columnData={column4Data} handleRefetch={setRefetch} />
         </GridItem>
-        <GridItem w="100%" h="94vh">
+        <GridItem w="100%">
           <BoardColumn columnData={column5Data} handleRefetch={setRefetch} />
         </GridItem>
       </Grid>

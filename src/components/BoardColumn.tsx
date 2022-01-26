@@ -125,7 +125,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
         borderRadius="lg"
         overflow="hidden"
         p={3}
-        height="100%"
+        height="90vh"
       >
         <HStack pb={2} justify="space-between">
           <Box sx={{ display: "flex" }}>
@@ -153,7 +153,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
           borderWidth="1px"
           borderRadius="md"
           p={1}
-          sx={{ height: "100%", overflowY: "scroll" }}
+          sx={{ height: "84vh", overflowY: "scroll" }}
         >
           {showNewTicketForm && (
             <CreateTicketForm

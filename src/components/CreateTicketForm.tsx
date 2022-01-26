@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { BoardContext } from "../contexts/BoardContext";
 import axios from "axios";
 import {
   Box,
@@ -23,6 +24,7 @@ export default function CreateTicketForm(
   props: CreateTicketFormProps
 ): JSX.Element {
   const { userData } = useContext(UserContext);
+  const { boardMembers } = useContext(BoardContext);
   const {
     boardId,
     columnId,
@@ -32,6 +34,7 @@ export default function CreateTicketForm(
   } = props;
   const [inputValue, setInputValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<string>("");
+  const [assignee, setAssignee] = useState<number>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const baseUrl = process.env.REACT_APP_API_URL;
@@ -43,7 +46,7 @@ export default function CreateTicketForm(
         column_id: columnId,
         ticket_name: inputValue,
         description: descriptionValue,
-        assigned_to: userData?.id,
+        assigned_to: assignee,
         created_by: userData?.id,
         priority_order: currentHighestPriority + 1,
       }
@@ -51,6 +54,7 @@ export default function CreateTicketForm(
     handleFormClose();
     handleRefetch((prev) => -prev);
   };
+  console.log(boardMembers);
 
   return (
     <Box
@@ -64,6 +68,7 @@ export default function CreateTicketForm(
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Input
+            isRequired
             mb={1}
             placeholder="Title..."
             size="sm"
@@ -73,6 +78,7 @@ export default function CreateTicketForm(
         </FormControl>
         <FormControl>
           <Textarea
+            isRequired
             mb={1}
             placeholder="Write a description..."
             size="sm"
@@ -81,11 +87,22 @@ export default function CreateTicketForm(
           />
         </FormControl>
         <FormControl>
-          {/* Come back to this and add in board members data */}
-          <Select mb={1} size="sm" placeholder="Choose assignee">
-            <option value="option1">User 1</option>
-            <option value="option2">User 2</option>
-            <option value="option3">User 3</option>
+          <Select
+            isRequired
+            mb={1}
+            size="sm"
+            placeholder="Choose assignee"
+            required
+            value={assignee}
+            onChange={(e) => setAssignee(Number(e.target.value))}
+          >
+            {boardMembers?.map((member) => {
+              return (
+                <option key={member.user_id} value={member.user_id}>
+                  {member.user_name} ({member.member_role})
+                </option>
+              );
+            })}
           </Select>
         </FormControl>
         <HStack justify="right">
