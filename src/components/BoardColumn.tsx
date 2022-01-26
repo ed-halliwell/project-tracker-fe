@@ -22,6 +22,7 @@ interface BoardColumnProps {
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
   const { columnData, handleRefetch } = props;
   const [showNewTicketForm, setShowNewTicketForm] = useState<boolean>(false);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
   const handlePlusIconClick = () => {
     setShowNewTicketForm(true);
@@ -50,8 +51,6 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
     currentPriority: number,
     type: string
   ) => {
-    const baseUrl = process.env.REACT_APP_API_URL;
-
     let nextHighestPriority: number | undefined;
     let nextLowerPriority: number | undefined;
     let swapTicket: TicketData | undefined;
@@ -110,10 +109,30 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
       (type === "increase" && nextHighestPriority !== undefined) ||
       (type === "decrease" && nextLowerPriority !== undefined)
     ) {
-      console.log("firing inside the if");
       swapPriorityValues();
       handleRefetch((prev) => -prev);
     }
+  };
+
+  const handleColumnChange = async (ticketId: number, type: string) => {
+    console.log("in handle column change function", ticketId, type);
+    if (type === "forward") {
+      const res = await axios.patch(
+        `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${ticketId}/column_move`,
+        {
+          type: "forward",
+        }
+      );
+      console.log(res);
+    } else if (type === "back") {
+      await axios.patch(
+        `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${ticketId}/column_move`,
+        {
+          type: "back",
+        }
+      );
+    }
+    handleRefetch((prev) => -prev);
   };
 
   return (
@@ -174,6 +193,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
               boardId={columnData.columnData[0].board_id}
               columnId={columnData.columnData[0].column_id}
               handlePriorityChange={handlePriorityChange}
+              handleColumnChange={handleColumnChange}
               handleRefetch={handleRefetch}
             />
           ))}

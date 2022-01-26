@@ -5,6 +5,7 @@ import {
   Button,
   Grid,
   GridItem,
+  HStack,
   IconButton,
   Menu,
   MenuButton,
@@ -21,7 +22,13 @@ import {
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowUpIcon, ArrowDownIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  ArrowForwardIcon,
+  ArrowBackIcon,
+  HamburgerIcon,
+} from "@chakra-ui/icons";
 import { TicketData } from "../utils/interfaces";
 
 interface BoardTicketCardProps {
@@ -35,12 +42,19 @@ interface BoardTicketCardProps {
     currentPriority: number,
     type: string
   ) => void;
+  handleColumnChange: (ticketId: number, type: string) => void;
 }
 
 export default function BoardTicketCard(
   props: BoardTicketCardProps
 ): JSX.Element {
-  const { ticket, boardId, handleRefetch, handlePriorityChange } = props;
+  const {
+    ticket,
+    boardId,
+    handleRefetch,
+    handlePriorityChange,
+    handleColumnChange,
+  } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const ticketDelete = async () => {
@@ -148,6 +162,24 @@ export default function BoardTicketCard(
                 }
               />
             </VStack>
+            <HStack>
+              <IconButton
+                size="xs"
+                aria-label="Move to previous column"
+                title="Move to previous column"
+                variant="outline"
+                icon={<ArrowBackIcon />}
+                onClick={() => handleColumnChange(ticket.ticket_id, "back")}
+              />
+              <IconButton
+                size="xs"
+                aria-label="Move to next column"
+                title="Move to next column"
+                variant="outline"
+                icon={<ArrowForwardIcon />}
+                onClick={() => handleColumnChange(ticket.ticket_id, "forward")}
+              />
+            </HStack>
           </VStack>
         </GridItem>
         <GridItem colSpan={5}>
