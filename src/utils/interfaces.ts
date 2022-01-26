@@ -13,6 +13,7 @@ export interface IBoard {
   created_by: number;
   user_name: string;
   created_at: string;
+  member_role?: string;
 }
 
 export interface IBoardTickets {

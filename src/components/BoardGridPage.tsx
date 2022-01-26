@@ -7,7 +7,8 @@ import { IBoard } from "../utils/interfaces";
 
 export default function BoardGridPage(): JSX.Element {
   const { userData } = useContext(UserContext);
-  const [boards, setBoards] = useState<IBoard[]>([]);
+  const [ownedBoards, setOwnedBoards] = useState<IBoard[]>([]);
+  const [sharedBoards, setSharedBoards] = useState<IBoard[]>([]);
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -15,7 +16,8 @@ export default function BoardGridPage(): JSX.Element {
       if (userData?.id) {
         try {
           const res = await axios.get(`${baseUrl}/users/${userData.id}/boards`);
-          setBoards(res.data.data);
+          setOwnedBoards(res.data.ownedBoards);
+          setSharedBoards(res.data.sharedBoards);
         } catch (error) {
           console.error(error);
         }
@@ -38,8 +40,8 @@ export default function BoardGridPage(): JSX.Element {
               : "Something went wrong")}
         </Heading>
         <Grid mt={5} templateColumns="repeat(5, 1fr)" gap={6}>
-          {boards?.length > 0 ? (
-            <BoardGrid boards={boards} />
+          {ownedBoards?.length > 0 ? (
+            <BoardGrid boards={ownedBoards} />
           ) : (
             <h1>No boards created by this user yet</h1>
           )}
@@ -53,8 +55,8 @@ export default function BoardGridPage(): JSX.Element {
               : "Something went wrong")}
         </Heading>
         <Grid mt={5} templateColumns="repeat(5, 1fr)" gap={6}>
-          {boards?.length > 0 ? (
-            <BoardGrid boards={boards} />
+          {sharedBoards?.length > 0 ? (
+            <BoardGrid boards={sharedBoards} />
           ) : (
             <h1>No boards shared with this user</h1>
           )}
