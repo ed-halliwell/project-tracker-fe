@@ -10,6 +10,7 @@ export default function BoardMainContainer(): JSX.Element {
   const params = useParams();
   const board_id = params.board_id ? parseInt(params.board_id, 10) : 0;
   const [boardData, setBoardData] = useState<IBoard | undefined>();
+  const [refetch, setRefetch] = useState<number>(1);
   const {
     column1Data,
     setColumn1Data,
@@ -80,6 +81,7 @@ export default function BoardMainContainer(): JSX.Element {
     setColumn3Data,
     setColumn4Data,
     setColumn5Data,
+    refetch,
   ]);
 
   return (
@@ -87,19 +89,19 @@ export default function BoardMainContainer(): JSX.Element {
       {boardData && <Heading mb={3}>{boardData.board_name}</Heading>}
       <Grid templateColumns="repeat(5, 1fr)" gap={6}>
         <GridItem w="100%" h="94vh">
-          <BoardColumn columnData={column1Data} />
+          <BoardColumn columnData={column1Data} handleRefetch={setRefetch} />
         </GridItem>
         <GridItem w="100%" h="94vh">
-          <BoardColumn columnData={column2Data} />
+          <BoardColumn columnData={column2Data} handleRefetch={setRefetch} />
         </GridItem>
         <GridItem w="100%" h="94vh">
-          <BoardColumn columnData={column3Data} />
+          <BoardColumn columnData={column3Data} handleRefetch={setRefetch} />
         </GridItem>
         <GridItem w="100%" h="94vh">
-          <BoardColumn columnData={column4Data} />
+          <BoardColumn columnData={column4Data} handleRefetch={setRefetch} />
         </GridItem>
         <GridItem w="100%" h="94vh">
-          <BoardColumn columnData={column5Data} />
+          <BoardColumn columnData={column5Data} handleRefetch={setRefetch} />
         </GridItem>
       </Grid>
     </Box>

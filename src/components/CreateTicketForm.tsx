@@ -11,24 +11,31 @@ import {
 } from "@chakra-ui/react";
 
 interface CreateTicketFormProps {
-  handleFormCancel: () => void;
   boardId: number | undefined;
   columnId: number | undefined;
   currentHighestPriority: number;
+  handleFormClose: () => void;
+  handleRefetch: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function CreateTicketForm(
   props: CreateTicketFormProps
 ): JSX.Element {
   const { userData } = useContext(UserContext);
-  const { boardId, columnId, handleFormCancel, currentHighestPriority } = props;
+  const {
+    boardId,
+    columnId,
+    currentHighestPriority,
+    handleFormClose,
+    handleRefetch,
+  } = props;
   const [inputValue, setInputValue] = useState<string>("");
   const [descriptionValue, setDescriptionValue] = useState<string>("");
 
-  const handleSubmit = async () => {
-    console.log("handleSubmit is firing", inputValue, descriptionValue);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const baseUrl = process.env.REACT_APP_API_URL;
-    const res = await axios.post(
+    e.preventDefault();
+    await axios.post(
       `${baseUrl}/boards/${boardId}/columns/${columnId}/tickets`,
       {
         board_id: boardId,
@@ -40,7 +47,8 @@ export default function CreateTicketForm(
         priority_order: currentHighestPriority + 1,
       }
     );
-    console.log(res.data.data);
+    handleFormClose();
+    handleRefetch((prev) => -prev);
   };
 
   return (
@@ -77,7 +85,7 @@ export default function CreateTicketForm(
             size="xs"
             variant="outline"
             colorScheme="blue"
-            onClick={handleFormCancel}
+            onClick={handleFormClose}
           >
             Cancel
           </Button>

@@ -15,17 +15,18 @@ import "../styles/BoardMainStyles.css";
 
 interface BoardColumnProps {
   columnData: ITotalColumnData | undefined;
+  handleRefetch: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function BoardColumn(props: BoardColumnProps): JSX.Element {
-  const { columnData } = props;
+  const { columnData, handleRefetch } = props;
   const [showNewTicketForm, setShowNewTicketForm] = useState<boolean>(false);
 
   const handlePlusIconClick = () => {
     setShowNewTicketForm(true);
   };
 
-  const handleFormCancel = () => {
+  const handleFormClose = () => {
     setShowNewTicketForm(false);
   };
 
@@ -75,7 +76,8 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
         <Box maxW="sm" borderWidth="1px" borderRadius="md" p={1} height="100%">
           {showNewTicketForm && (
             <CreateTicketForm
-              handleFormCancel={handleFormCancel}
+              handleFormClose={handleFormClose}
+              handleRefetch={handleRefetch}
               boardId={columnData?.columnData[0].board_id}
               columnId={columnData?.columnData[0].column_id}
               currentHighestPriority={findHighestPriority(
@@ -85,7 +87,12 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
           )}
 
           {columnData?.ticketData.map((ticket) => (
-            <BoardTicketCard key={ticket.ticket_id} ticket={ticket} />
+            <BoardTicketCard
+              key={ticket.ticket_id}
+              ticket={ticket}
+              boardId={columnData.columnData[0].board_id}
+              handleRefetch={handleRefetch}
+            />
           ))}
         </Box>
       </Box>
