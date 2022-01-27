@@ -69,31 +69,39 @@ export default function BoardMainContainer(): JSX.Element {
         const res = await axios.get(
           `${baseUrl}/boards/${board_id}/column_data`
         );
+        interface ColumnIDAndOrder {
+          column_id: number;
+          column_order: number;
+        }
 
-        const columnArray = res.data.data.map(
-          (a: { column_ids: number }) => a.column_ids
+        const columnsInAscOrder = res.data.data.sort(
+          (a: ColumnIDAndOrder, b: ColumnIDAndOrder) =>
+            a.column_order - b.column_order
         );
+        console.log(columnsInAscOrder);
 
-        const fetchAndSetColumnData = async (column_id: number) => {
+        const fetchAndSetColumn1Data = async (column_id: number) => {
           const res = await axios.get(
             `${baseUrl}/boards/${board_id}/columns/${column_id}`
           );
-
-          switch (column_id) {
-            case 1:
-              setColumn1Data(res.data);
-              break;
-            case 2:
-              setColumn2Data(res.data);
-              break;
-            case 3:
-              setColumn3Data(res.data);
-              break;
-          }
+          setColumn1Data(res.data);
         };
-        columnArray.forEach((columnId: number) => {
-          fetchAndSetColumnData(columnId);
-        });
+        const fetchAndSetColumn2Data = async (column_id: number) => {
+          const res = await axios.get(
+            `${baseUrl}/boards/${board_id}/columns/${column_id}`
+          );
+          setColumn2Data(res.data);
+        };
+        const fetchAndSetColumn3Data = async (column_id: number) => {
+          const res = await axios.get(
+            `${baseUrl}/boards/${board_id}/columns/${column_id}`
+          );
+          setColumn3Data(res.data);
+        };
+
+        fetchAndSetColumn1Data(columnsInAscOrder[0].column_id);
+        fetchAndSetColumn2Data(columnsInAscOrder[1].column_id);
+        fetchAndSetColumn3Data(columnsInAscOrder[2].column_id);
       } catch (error) {
         console.error(error);
       }

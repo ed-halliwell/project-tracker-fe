@@ -148,11 +148,13 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
         <HStack pb={2} justify="space-between">
           <Box sx={{ display: "flex" }}>
             <Circle size="20px" bg="gray.700" color="white">
-              <Text>{columnData && columnData.ticketData.length}</Text>
+              <Text>{columnData ? columnData.ticketData.length : 0}</Text>
             </Circle>
 
             <Heading as="h3" size="sm" isTruncated pl={2}>
-              {columnData?.columnData[0].column_name}
+              {columnData
+                ? columnData?.columnData[0].column_name
+                : "Empty column"}
             </Heading>
           </Box>
           <IconButton
@@ -185,17 +187,21 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
             />
           )}
 
-          {columnData?.ticketData.map((ticket) => (
-            <BoardTicketCard
-              key={ticket.ticket_id}
-              ticket={ticket}
-              boardId={columnData.columnData[0].board_id}
-              columnId={columnData.columnData[0].column_id}
-              handlePriorityChange={handlePriorityChange}
-              handleColumnChange={handleColumnChange}
-              handleRefetch={handleRefetch}
-            />
-          ))}
+          {columnData ? (
+            columnData?.ticketData.map((ticket) => (
+              <BoardTicketCard
+                key={ticket.ticket_id}
+                ticket={ticket}
+                boardId={columnData.columnData[0].board_id}
+                columnId={columnData.columnData[0].column_id}
+                handlePriorityChange={handlePriorityChange}
+                handleColumnChange={handleColumnChange}
+                handleRefetch={handleRefetch}
+              />
+            ))
+          ) : (
+            <Box width="20rem" p={0} mb={2} bg="white"></Box>
+          )}
         </Box>
       </Box>
     </>
