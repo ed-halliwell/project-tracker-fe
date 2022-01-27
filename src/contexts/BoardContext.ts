@@ -20,14 +20,6 @@ export const BoardContext = createContext<{
   setColumn3Data: React.Dispatch<
     React.SetStateAction<ITotalColumnData | undefined>
   >;
-  column4Data: ITotalColumnData | undefined;
-  setColumn4Data: React.Dispatch<
-    React.SetStateAction<ITotalColumnData | undefined>
-  >;
-  column5Data: ITotalColumnData | undefined;
-  setColumn5Data: React.Dispatch<
-    React.SetStateAction<ITotalColumnData | undefined>
-  >;
 }>({
   boardData: undefined,
   setBoardData: () => {
@@ -47,14 +39,6 @@ export const BoardContext = createContext<{
   },
   column3Data: undefined,
   setColumn3Data: () => {
-    /** */
-  },
-  column4Data: undefined,
-  setColumn4Data: () => {
-    /** */
-  },
-  column5Data: undefined,
-  setColumn5Data: () => {
     /** */
   },
 });

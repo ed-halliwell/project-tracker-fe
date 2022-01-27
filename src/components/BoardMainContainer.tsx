@@ -3,15 +3,40 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BoardContext } from "../contexts/BoardContext";
 import BoardColumn from "./BoardColumn";
-import { Box, Grid, GridItem, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Select,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { IUser } from "../utils/interfaces";
 
 export default function BoardMainContainer(): JSX.Element {
   const params = useParams();
   const board_id = params.board_id ? parseInt(params.board_id, 10) : 0;
   const [refetch, setRefetch] = useState<number>(1);
+  const [selectedUserToAdd, setSelectedUserToAdd] = useState<string>();
+  const [selectedUserToRemove, setSelectedUserToRemove] = useState<string>();
+  const [allUsers, setAllUsers] = useState<IUser[]>([]);
+  const [roleChoice, setRoleChoice] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     boardData,
     setBoardData,
+    boardMembers,
     setBoardMembers,
     column1Data,
     setColumn1Data,
@@ -19,10 +44,6 @@ export default function BoardMainContainer(): JSX.Element {
     setColumn2Data,
     column3Data,
     setColumn3Data,
-    column4Data,
-    setColumn4Data,
-    column5Data,
-    setColumn5Data,
   } = useContext(BoardContext);
 
   useEffect(() => {
@@ -68,12 +89,6 @@ export default function BoardMainContainer(): JSX.Element {
             case 3:
               setColumn3Data(res.data);
               break;
-            case 4:
-              setColumn4Data(res.data);
-              break;
-            case 5:
-              setColumn5Data(res.data);
-              break;
           }
         };
         columnArray.forEach((columnId: number) => {
@@ -84,38 +99,126 @@ export default function BoardMainContainer(): JSX.Element {
       }
     };
     fetchBoardData();
+
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get(`${baseUrl}/users`);
+        setAllUsers(res.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUsers();
   }, [
     board_id,
     setColumn1Data,
     setColumn2Data,
     setColumn3Data,
-    setColumn4Data,
-    setColumn5Data,
     refetch,
     setBoardData,
     setBoardMembers,
   ]);
 
   return (
-    <Box m={5}>
-      {boardData && <Heading mb={3}>{boardData.board_name}</Heading>}
-      <Grid templateColumns="repeat(5, 1fr)" gap={6}>
-        <GridItem w="100%">
-          <BoardColumn columnData={column1Data} handleRefetch={setRefetch} />
-        </GridItem>
-        <GridItem w="100%">
-          <BoardColumn columnData={column2Data} handleRefetch={setRefetch} />
-        </GridItem>
-        <GridItem w="100%">
-          <BoardColumn columnData={column3Data} handleRefetch={setRefetch} />
-        </GridItem>
-        <GridItem w="100%">
-          <BoardColumn columnData={column4Data} handleRefetch={setRefetch} />
-        </GridItem>
-        <GridItem w="100%">
-          <BoardColumn columnData={column5Data} handleRefetch={setRefetch} />
-        </GridItem>
-      </Grid>
-    </Box>
+    <>
+      <Container maxW="container.xl">
+        {boardData && (
+          <HStack justifyContent="space-between">
+            <Heading my={3}>{boardData.board_name}</Heading>
+            <Button onClick={onOpen}>Edit Board Members</Button>
+          </HStack>
+        )}
+
+        <Grid
+          templateColumns="repeat(3, 1fr)"
+          sx={{ display: "flex", justifyContent: "center" }}
+          gap={8}
+        >
+          <GridItem>
+            <BoardColumn columnData={column1Data} handleRefetch={setRefetch} />
+          </GridItem>
+          <GridItem>
+            <BoardColumn columnData={column2Data} handleRefetch={setRefetch} />
+          </GridItem>
+          <GridItem>
+            <BoardColumn columnData={column3Data} handleRefetch={setRefetch} />
+          </GridItem>
+        </Grid>
+      </Container>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Board Members</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              <Text>Add a board member:</Text>
+
+              <Select
+                placeholder="Select a user to add"
+                size="sm"
+                value={selectedUserToAdd}
+                onChange={(e) => setSelectedUserToAdd(e.target.value)}
+              >
+                {allUsers
+                  ?.filter((user) => {
+                    return !boardMembers
+                      ?.map((m) => m.user_id)
+                      .includes(user.id)
+                      ? user
+                      : false;
+                  })
+                  .map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.user_name}
+                    </option>
+                  ))}
+              </Select>
+              <Select
+                placeholder="Choose their role"
+                mt={2}
+                size="sm"
+                value={roleChoice}
+                onChange={(e) => setRoleChoice(e.target.value)}
+              >
+                <option value="Admin">Admin</option>
+                <option value="Team Member">Team Member</option>
+                <option value="Viewer">Viewer</option>
+              </Select>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button mt={2} colorScheme="blue" onClick={onClose} size="sm">
+                  Add board member
+                </Button>
+              </Box>
+            </Box>
+            <Box mt={5}>
+              <Text>Remove a board member:</Text>
+
+              <Select
+                placeholder="Select a user to remove"
+                size="sm"
+                value={selectedUserToRemove}
+                onChange={(e) => setSelectedUserToRemove(e.target.value)}
+              >
+                {boardMembers
+                  ?.filter((user) => user.member_role !== "Owner")
+                  .map((user) => (
+                    <option key={user.user_id} value={user.user_id}>
+                      {user.user_name} ({user.member_role})
+                    </option>
+                  ))}
+              </Select>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button mt={2} colorScheme="red" onClick={onClose} size="sm">
+                  Remove board member
+                </Button>
+              </Box>
+            </Box>
+          </ModalBody>
+
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

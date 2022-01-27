@@ -22,12 +22,6 @@ export default function BoardContextWrapper(
   const [column3Data, setColumn3Data] = useState<ITotalColumnData | undefined>(
     undefined
   );
-  const [column4Data, setColumn4Data] = useState<ITotalColumnData | undefined>(
-    undefined
-  );
-  const [column5Data, setColumn5Data] = useState<ITotalColumnData | undefined>(
-    undefined
-  );
 
   const board = useMemo(
     () => ({
@@ -41,10 +35,6 @@ export default function BoardContextWrapper(
       setColumn2Data,
       column3Data,
       setColumn3Data,
-      column4Data,
-      setColumn4Data,
-      column5Data,
-      setColumn5Data,
     }),
     [
       boardData,
@@ -57,10 +47,6 @@ export default function BoardContextWrapper(
       setColumn2Data,
       column3Data,
       setColumn3Data,
-      column4Data,
-      setColumn4Data,
-      column5Data,
-      setColumn5Data,
     ]
   );
 
