@@ -54,7 +54,6 @@ export default function CreateTicketForm(
     handleFormClose();
     handleRefetch((prev) => -prev);
   };
-  console.log(boardMembers);
 
   return (
     <Box

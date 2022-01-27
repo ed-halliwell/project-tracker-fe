@@ -79,7 +79,7 @@ export default function Header(): JSX.Element {
     >
       <HStack divider={<StackDivider borderColor="gray.200" />}>
         <Box>
-          <Heading as="h1" size="xl">
+          <Heading as="h1" size="xl" mr={2}>
             Project Tracker
           </Heading>
         </Box>
