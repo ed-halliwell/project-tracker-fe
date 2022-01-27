@@ -28,8 +28,8 @@ export default function BoardMainContainer(): JSX.Element {
   const params = useParams();
   const board_id = params.board_id ? parseInt(params.board_id, 10) : 0;
   const [refetch, setRefetch] = useState<number>(1);
-  const [selectedUserToAdd, setSelectedUserToAdd] = useState<string>();
-  const [selectedUserToRemove, setSelectedUserToRemove] = useState<string>();
+  const [selectedUserToAdd, setSelectedUserToAdd] = useState<number>();
+  const [selectedUserToRemove, setSelectedUserToRemove] = useState<number>();
   const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [roleChoice, setRoleChoice] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -118,6 +118,28 @@ export default function BoardMainContainer(): JSX.Element {
     setBoardData,
     setBoardMembers,
   ]);
+  const baseUrl = process.env.REACT_APP_API_URL;
+
+  const handleAddBoardMember = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await axios.post(`${baseUrl}/boards/${board_id}/board_members`, {
+      user_id: selectedUserToAdd,
+      member_role: roleChoice,
+    });
+    onClose();
+    setRefetch((prev) => -prev);
+  };
+
+  const handleRemoveBoardMember = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    await axios.delete(
+      `${baseUrl}/boards/${board_id}/board_members/${selectedUserToRemove}`
+    );
+    onClose();
+    setRefetch((prev) => -prev);
+  };
 
   return (
     <>
@@ -153,66 +175,82 @@ export default function BoardMainContainer(): JSX.Element {
           <ModalBody>
             <Box>
               <Text>Add a board member:</Text>
-
-              <Select
-                placeholder="Select a user to add"
-                size="sm"
-                value={selectedUserToAdd}
-                onChange={(e) => setSelectedUserToAdd(e.target.value)}
-              >
-                {allUsers
-                  ?.filter((user) => {
-                    return !boardMembers
-                      ?.map((m) => m.user_id)
-                      .includes(user.id)
-                      ? user
-                      : false;
-                  })
-                  .map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.user_name}
-                    </option>
-                  ))}
-              </Select>
-              <Select
-                placeholder="Choose their role"
-                mt={2}
-                size="sm"
-                value={roleChoice}
-                onChange={(e) => setRoleChoice(e.target.value)}
-              >
-                <option value="Admin">Admin</option>
-                <option value="Team Member">Team Member</option>
-                <option value="Viewer">Viewer</option>
-              </Select>
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button mt={2} colorScheme="blue" onClick={onClose} size="sm">
-                  Add board member
-                </Button>
-              </Box>
+              <form onSubmit={(e) => handleAddBoardMember(e)}>
+                <Select
+                  placeholder="Select a user to add"
+                  size="sm"
+                  value={selectedUserToAdd}
+                  onChange={(e) => setSelectedUserToAdd(Number(e.target.value))}
+                >
+                  {allUsers
+                    ?.filter((user) => {
+                      return !boardMembers
+                        ?.map((m) => m.user_id)
+                        .includes(user.id)
+                        ? user
+                        : false;
+                    })
+                    .map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.user_name}
+                      </option>
+                    ))}
+                </Select>
+                <Select
+                  placeholder="Choose their role"
+                  mt={2}
+                  size="sm"
+                  value={roleChoice}
+                  onChange={(e) => setRoleChoice(e.target.value)}
+                >
+                  <option value="Admin">Admin</option>
+                  <option value="Team Member">Team Member</option>
+                  <option value="Viewer">Viewer</option>
+                </Select>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    type="submit"
+                    mt={2}
+                    colorScheme="blue"
+                    onClick={onClose}
+                    size="sm"
+                  >
+                    Add board member
+                  </Button>
+                </Box>
+              </form>
             </Box>
             <Box mt={5}>
               <Text>Remove a board member:</Text>
-
-              <Select
-                placeholder="Select a user to remove"
-                size="sm"
-                value={selectedUserToRemove}
-                onChange={(e) => setSelectedUserToRemove(e.target.value)}
-              >
-                {boardMembers
-                  ?.filter((user) => user.member_role !== "Owner")
-                  .map((user) => (
-                    <option key={user.user_id} value={user.user_id}>
-                      {user.user_name} ({user.member_role})
-                    </option>
-                  ))}
-              </Select>
-              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button mt={2} colorScheme="red" onClick={onClose} size="sm">
-                  Remove board member
-                </Button>
-              </Box>
+              <form onSubmit={(e) => handleRemoveBoardMember(e)}>
+                <Select
+                  placeholder="Select a user to remove"
+                  size="sm"
+                  value={selectedUserToRemove}
+                  onChange={(e) =>
+                    setSelectedUserToRemove(Number(e.target.value))
+                  }
+                >
+                  {boardMembers
+                    ?.filter((user) => user.member_role !== "Owner")
+                    .map((user) => (
+                      <option key={user.user_id} value={user.user_id}>
+                        {user.user_name} ({user.member_role})
+                      </option>
+                    ))}
+                </Select>
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    type="submit"
+                    mt={2}
+                    colorScheme="red"
+                    onClick={onClose}
+                    size="sm"
+                  >
+                    Remove board member
+                  </Button>
+                </Box>
+              </form>
             </Box>
           </ModalBody>
 
