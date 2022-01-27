@@ -74,7 +74,12 @@ export default function BoardTicketCard(
             flexGrow: 10,
           }}
         >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
@@ -102,15 +107,19 @@ export default function BoardTicketCard(
                 {ticket.ticket_name}
               </Box>
             </Box>
-            <Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
               <VStack alignItems="flex-start" justifyContent="space-between">
                 <Text
                   fontSize="sm"
                   noOfLines={5}
                   isTruncated
                   maxWidth="100%"
-                  lineHeight="tight"
-                  sx={{ whiteSpace: "normal" }}
+                  sx={{ whiteSpace: "normal", flexGrow: 4 }}
                 >
                   {ticket.description}
                 </Text>
@@ -118,9 +127,7 @@ export default function BoardTicketCard(
                 <Box
                   color="gray.500"
                   fontWeight="semibold"
-                  letterSpacing="wide"
                   fontSize="xs"
-                  textTransform="uppercase"
                   justifySelf="flex-end"
                 >
                   Added by {ticket.user_name}
