@@ -3,9 +3,6 @@ import {
   Avatar,
   Box,
   Button,
-  Grid,
-  GridItem,
-  HStack,
   IconButton,
   Menu,
   MenuButton,
@@ -67,147 +64,172 @@ export default function BoardTicketCard(
   };
 
   return (
-    <Box maxW="sm" borderWidth="1px" borderRadius="md" p={2} mb={2} bg="white">
-      <Grid templateRows="3" templateColumns="repeat(6, 1fr)" gap={2}>
-        <GridItem colSpan={5}>
-          <Box sx={{ display: "flex" }}>
-            <Avatar name={ticket.assigned_to_user_name} size="sm" />
-            <Box
-              fontWeight="semibold"
-              as="h4"
-              fontSize="sm"
-              lineHeight="tight"
-              isTruncated
-              sx={{
-                marginLeft: "6px",
-                borderBottom: "1px #CBD5E0 solid",
-                alignSelf: "center",
-              }}
-            >
-              {ticket.ticket_name}
-            </Box>
-          </Box>
-        </GridItem>
-        <GridItem
-          rowSpan={2}
-          colSpan={1}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <VStack justifyContent="space-between">
-            <Box>
-              <Menu size="xs">
-                <MenuButton
-                  as={IconButton}
-                  size="xs"
-                  aria-label="Options"
-                  icon={<HamburgerIcon />}
-                  variant="outline"
-                />
-                <MenuList>
-                  <MenuItem>Edit</MenuItem>
-                  <MenuItem onClick={onOpen}>Delete</MenuItem>
-
-                  <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                      <ModalHeader>Are you sure?</ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody>
-                        Deleting this ticket cannot be undone.
-                      </ModalBody>
-
-                      <ModalFooter>
-                        <Button colorScheme="red" mr={3} onClick={ticketDelete}>
-                          Delete
-                        </Button>
-                        <Button variant="ghost" onClick={onClose}>
-                          Cancel
-                        </Button>
-                      </ModalFooter>
-                    </ModalContent>
-                  </Modal>
-                </MenuList>
-              </Menu>
-            </Box>
-            <VStack>
-              <IconButton
-                size="xs"
-                aria-label="Move up"
-                title="Move up"
-                variant="outline"
-                icon={<ArrowUpIcon />}
-                onClick={() =>
-                  handlePriorityChange(
-                    ticket.ticket_id,
-                    ticket.priority_order,
-                    "increase"
-                  )
-                }
-              />
-              <IconButton
-                size="xs"
-                aria-label="Move down"
-                title="Move down"
-                variant="outline"
-                icon={<ArrowDownIcon />}
-                onClick={() =>
-                  handlePriorityChange(
-                    ticket.ticket_id,
-                    ticket.priority_order,
-                    "decrease"
-                  )
-                }
-              />
-            </VStack>
-            <HStack>
+    <Box maxW="sm" borderWidth="1px" borderRadius="md" p={0} mb={2} bg="white">
+      <VStack>
+        <Box>
+          <IconButton
+            size="xs"
+            aria-label="Move up"
+            title="Move up"
+            variant="ghost"
+            icon={<ArrowUpIcon />}
+            onClick={() =>
+              handlePriorityChange(
+                ticket.ticket_id,
+                ticket.priority_order,
+                "increase"
+              )
+            }
+          />
+        </Box>
+        <Box>
+          <Box
+            sx={{ display: "flex", minWidth: "20rem" }}
+            justifyContent="space-between"
+          >
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="xs"
                 aria-label="Move to previous column"
                 title="Move to previous column"
-                variant="outline"
+                variant="ghost"
                 icon={<ArrowBackIcon />}
                 onClick={() => handleColumnChange(ticket.ticket_id, "back")}
               />
+            </Box>
+            <Box
+              sx={{
+                flexGrow: 10,
+              }}
+            >
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  mb={2}
+                >
+                  <Avatar name={ticket.assigned_to_user_name} size="sm" />
+                  <Box
+                    fontWeight="semibold"
+                    as="h4"
+                    fontSize="sm"
+                    lineHeight="tight"
+                    noOfLines={1}
+                    isTruncated
+                    sx={{
+                      marginLeft: "6px",
+                      borderBottom: "1px #CBD5E0 solid",
+                      alignSelf: "center",
+                      whiteSpace: "normal",
+                      flexGrow: 4,
+                    }}
+                  >
+                    {ticket.ticket_name}
+                  </Box>
+
+                  <Box ml={2}>
+                    <Menu size="xs">
+                      <MenuButton
+                        as={IconButton}
+                        size="xs"
+                        aria-label="Options"
+                        icon={<HamburgerIcon />}
+                        variant="outline"
+                      />
+                      <MenuList>
+                        <MenuItem>Edit</MenuItem>
+                        <MenuItem onClick={onOpen}>Delete</MenuItem>
+
+                        <Modal isOpen={isOpen} onClose={onClose}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>Are you sure?</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                              Deleting this ticket cannot be undone.
+                            </ModalBody>
+
+                            <ModalFooter>
+                              <Button
+                                colorScheme="red"
+                                mr={3}
+                                onClick={ticketDelete}
+                              >
+                                Delete
+                              </Button>
+                              <Button variant="ghost" onClick={onClose}>
+                                Cancel
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      </MenuList>
+                    </Menu>
+                  </Box>
+                </Box>
+                <Box>
+                  <VStack
+                    alignItems="flex-start"
+                    justifyContent="space-between"
+                  >
+                    <Text
+                      fontSize="sm"
+                      noOfLines={5}
+                      isTruncated
+                      maxWidth="100%"
+                      lineHeight="tight"
+                      sx={{ whiteSpace: "normal" }}
+                    >
+                      {ticket.description}
+                    </Text>
+
+                    <Box
+                      color="gray.500"
+                      fontWeight="semibold"
+                      letterSpacing="wide"
+                      fontSize="xs"
+                      textTransform="uppercase"
+                      justifySelf="flex-end"
+                    >
+                      Added by {ticket.user_name}
+                    </Box>
+                  </VStack>
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 size="xs"
                 aria-label="Move to next column"
                 title="Move to next column"
-                variant="outline"
+                variant="ghost"
                 icon={<ArrowForwardIcon />}
                 onClick={() => handleColumnChange(ticket.ticket_id, "forward")}
               />
-            </HStack>
-          </VStack>
-        </GridItem>
-        <GridItem colSpan={5}>
-          <VStack alignItems="flex-start">
-            <Text
-              fontSize="sm"
-              noOfLines={5}
-              isTruncated
-              maxWidth="100%"
-              lineHeight="tight"
-              sx={{ whiteSpace: "normal" }}
-            >
-              {ticket.description}
-            </Text>
-
-            <Box
-              color="gray.500"
-              fontWeight="semibold"
-              letterSpacing="wide"
-              fontSize="xs"
-              textTransform="uppercase"
-              justifySelf="flex-end"
-            >
-              Added by {ticket.user_name}
             </Box>
-          </VStack>
-        </GridItem>
-      </Grid>
+          </Box>
+        </Box>
+        <Box>
+          <IconButton
+            sx={{ padding: 0 }}
+            size="xs"
+            aria-label="Move down"
+            title="Move down"
+            variant="ghost"
+            icon={<ArrowDownIcon />}
+            onClick={() =>
+              handlePriorityChange(
+                ticket.ticket_id,
+                ticket.priority_order,
+                "decrease"
+              )
+            }
+          />
+        </Box>
+      </VStack>
     </Box>
   );
 }
