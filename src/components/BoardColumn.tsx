@@ -116,13 +116,12 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
 
   const handleColumnChange = async (ticketId: number, type: string) => {
     if (type === "forward") {
-      const res = await axios.patch(
+      await axios.patch(
         `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${ticketId}/column_move`,
         {
           type: "forward",
         }
       );
-      console.log(res);
     } else if (type === "back") {
       await axios.patch(
         `${baseUrl}/boards/${columnData?.columnData[0].board_id}/tickets/${ticketId}/column_move`,
