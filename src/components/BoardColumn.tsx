@@ -152,9 +152,9 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
             </Circle>
 
             <Heading as="h3" size="sm" isTruncated pl={2}>
-              {columnData
+              {columnData?.ticketData
                 ? columnData?.columnData[0].column_name
-                : "Empty column"}
+                : "Unknown column"}
             </Heading>
           </Box>
           <IconButton
@@ -187,7 +187,7 @@ export default function BoardColumn(props: BoardColumnProps): JSX.Element {
             />
           )}
 
-          {columnData ? (
+          {columnData && columnData?.ticketData.length > 0 ? (
             columnData?.ticketData.map((ticket) => (
               <BoardTicketCard
                 key={ticket.ticket_id}

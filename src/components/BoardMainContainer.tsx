@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { BoardContext } from "../contexts/BoardContext";
 import BoardColumn from "./BoardColumn";
@@ -32,7 +33,17 @@ export default function BoardMainContainer(): JSX.Element {
   const [selectedUserToRemove, setSelectedUserToRemove] = useState<number>();
   const [allUsers, setAllUsers] = useState<IUser[]>([]);
   const [roleChoice, setRoleChoice] = useState<string>("");
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isBMOpen,
+    onOpen: onBMOpen,
+    onClose: onBMClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDelOpen,
+    onOpen: onDelOpen,
+    onClose: onDelClose,
+  } = useDisclosure();
+
   const {
     boardData,
     setBoardData,
@@ -45,6 +56,8 @@ export default function BoardMainContainer(): JSX.Element {
     column3Data,
     setColumn3Data,
   } = useContext(BoardContext);
+
+  const history = useNavigate();
 
   useEffect(() => {
     const baseUrl = process.env.REACT_APP_API_URL;
@@ -69,6 +82,7 @@ export default function BoardMainContainer(): JSX.Element {
         const res = await axios.get(
           `${baseUrl}/boards/${board_id}/column_data`
         );
+
         interface ColumnIDAndOrder {
           column_id: number;
           column_order: number;
@@ -78,7 +92,6 @@ export default function BoardMainContainer(): JSX.Element {
           (a: ColumnIDAndOrder, b: ColumnIDAndOrder) =>
             a.column_order - b.column_order
         );
-        console.log(columnsInAscOrder);
 
         const fetchAndSetColumn1Data = async (column_id: number) => {
           const res = await axios.get(
@@ -134,7 +147,7 @@ export default function BoardMainContainer(): JSX.Element {
       user_id: selectedUserToAdd,
       member_role: roleChoice,
     });
-    onClose();
+    onBMClose();
     setRefetch((prev) => -prev);
   };
 
@@ -145,8 +158,14 @@ export default function BoardMainContainer(): JSX.Element {
     await axios.delete(
       `${baseUrl}/boards/${board_id}/board_members/${selectedUserToRemove}`
     );
-    onClose();
+    onBMClose();
     setRefetch((prev) => -prev);
+  };
+
+  const handleDeleteBoard = async () => {
+    const res = await axios.delete(`${baseUrl}/boards/${board_id}`);
+    console.log(res);
+    history("/boards");
   };
 
   return (
@@ -155,7 +174,12 @@ export default function BoardMainContainer(): JSX.Element {
         {boardData && (
           <HStack justifyContent="space-between">
             <Heading my={3}>{boardData.board_name}</Heading>
-            <Button onClick={onOpen}>Edit Board Members</Button>
+            <Box>
+              <Button onClick={onBMOpen}>Edit Board Members</Button>
+              <Button onClick={onDelOpen} ml={3} colorScheme="red">
+                Delete Board
+              </Button>
+            </Box>
           </HStack>
         )}
 
@@ -175,7 +199,7 @@ export default function BoardMainContainer(): JSX.Element {
           </GridItem>
         </Grid>
       </Container>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isBMOpen} onClose={onBMClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Edit Board Members</ModalHeader>
@@ -220,7 +244,7 @@ export default function BoardMainContainer(): JSX.Element {
                     type="submit"
                     mt={2}
                     colorScheme="blue"
-                    onClick={onClose}
+                    onClick={onBMClose}
                     size="sm"
                   >
                     Add board member
@@ -252,7 +276,7 @@ export default function BoardMainContainer(): JSX.Element {
                     type="submit"
                     mt={2}
                     colorScheme="red"
-                    onClick={onClose}
+                    onClick={onBMClose}
                     size="sm"
                   >
                     Remove board member
@@ -263,6 +287,27 @@ export default function BoardMainContainer(): JSX.Element {
           </ModalBody>
 
           <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal isOpen={isDelOpen} onClose={onDelClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Are you sure?</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            All tickets on this board will also be deleted. This action cannot
+            be undone.
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onDelClose}>
+              Cancel
+            </Button>
+            <Button colorScheme="red" onClick={handleDeleteBoard}>
+              Delete
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

@@ -27,3 +27,12 @@
   text-align: center;
   text-shadow: 2px 2px 5px #575656;
 }
+
+.small-hero {
+  position: relative;
+  color: #ffffff;
+  font-size: 14rem;
+  line-height: 0.9;
+  text-align: center;
+  text-shadow: 2px 2px 5px #575656;
+}

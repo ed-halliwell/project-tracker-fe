@@ -153,15 +153,11 @@ export default function BoardTicketCard(
                             </ModalBody>
 
                             <ModalFooter>
-                              <Button
-                                colorScheme="red"
-                                mr={3}
-                                onClick={ticketDelete}
-                              >
-                                Delete
-                              </Button>
-                              <Button variant="ghost" onClick={onClose}>
+                              <Button mr={3} variant="ghost" onClick={onClose}>
                                 Cancel
+                              </Button>
+                              <Button colorScheme="red" onClick={ticketDelete}>
+                                Delete
                               </Button>
                             </ModalFooter>
                           </ModalContent>

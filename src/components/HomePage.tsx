@@ -1,4 +1,4 @@
-import { Box, Button, VStack } from "@chakra-ui/react";
+import { Box, Heading, VStack } from "@chakra-ui/react";
 import "../styles/HomePage.css";
 
 export default function HomePage(): JSX.Element {
@@ -6,9 +6,7 @@ export default function HomePage(): JSX.Element {
     <Box w="100%" h="100vh" className="hero">
       <VStack spacing={10}>
         <h2 className="hero-text">Get your team organised</h2>
-        <Button variant="solid" colorScheme="blue" size="lg">
-          Get started
-        </Button>
+        <Heading className="small-hero">Login to get started!</Heading>
       </VStack>
     </Box>
   );
