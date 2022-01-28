@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 import { BoardContext } from "../contexts/BoardContext";
 import BoardColumn from "./BoardColumn";
 import {
@@ -44,6 +45,7 @@ export default function BoardMainContainer(): JSX.Element {
     onClose: onDelClose,
   } = useDisclosure();
 
+  const { userData } = useContext(UserContext);
   const {
     boardData,
     setBoardData,
@@ -176,9 +178,11 @@ export default function BoardMainContainer(): JSX.Element {
             <Heading my={3}>{boardData.board_name}</Heading>
             <Box>
               <Button onClick={onBMOpen}>Edit Board Members</Button>
-              <Button onClick={onDelOpen} ml={3} colorScheme="red">
-                Delete Board
-              </Button>
+              {userData?.id === boardData.created_by && (
+                <Button onClick={onDelOpen} ml={3} colorScheme="red">
+                  Delete Board
+                </Button>
+              )}
             </Box>
           </HStack>
         )}
